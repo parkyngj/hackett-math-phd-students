@@ -233,3 +233,28 @@ $database.execute(
   "
   )
 
+# triggers
+
+# trigger to automatically set graduation date after student has taken 8 classes
+
+$database.execute(
+  "CREATE TRIGGER IF NOT EXISTS set_grad_date AFTER INSERT ON grades
+  WHEN 8=(SELECT count(*) FROM grades WHERE student=(SELECT student FROM grades WHERE id=(select max(id) from grades)))
+  BEGIN
+    UPDATE students SET graduation_date=(SELECT date_given FROM grades WHERE id=(select max(id) FROM grades)) WHERE id=(SELECT student FROM grades WHERE id=(SELECT max(id) FROM grades));
+  END;
+  "
+  )
+
+# trigger to automatically calculate a student's gpa after a student takes a class
+
+$database.execute(
+  "CREATE TRIGGER IF NOT EXISTS gpa_calc AFTER INSERT ON grades
+  BEGIN
+    UPDATE students
+    SET gpa=(SELECT sum(grade) FROM grades total WHERE student=(SELECT student FROM grades WHERE id=(SELECT max(id) FROM grades)))/(SELECT count(*) FROM grades WHERE student=(SELECT STUDENT FROM grades WHERE id=(SELECT max(id) FROM grades)))
+    WHERE id=(SELECT STUDENT FROM grades WHERE id=(SELECT max(id) FROM grades));
+  END;
+  "
+  )
+
