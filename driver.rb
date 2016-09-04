@@ -1,6 +1,7 @@
 # User interface file for Math PhD Students Database
 
 require 'sqlite3'
+require 'csv'
 require_relative 'students'
 require_relative 'advisors'
 require_relative 'classes'
@@ -8,6 +9,7 @@ require_relative 'grades'
 require_relative 'fields'
 
 $database = SQLite3::Database.new("hmps.db")
+$database.results_as_hash = true
 
 $database.execute("CREATE TABLE IF NOT EXISTS students(
   id INTEGER PRIMARY KEY,
@@ -275,3 +277,101 @@ end
 def add_advisor(lastname, firstname, field_id)
   $database.execute("INSERT INTO advisors (last_name, first_name, field) VALUES (?, ?, ?)", [lastname, firstname, field_id])
 end
+
+# functions for viewing entries
+
+add_student('Park', "David", 1, 1)
+add_student('Stokes', "Nathan", 2, 2, "2015-05-18")
+add_grade(1, 4, 3.5)
+8.times do add_grade(2, 9, 3.7, "2015-12-14") end
+
+def view_students
+  all_students = $database.execute("SELECT * FROM students")
+  students_schema = $database.execute("PRAGMA table_info(students)")
+
+  students_columns_ary = []
+  students_schema.each do |column|
+    students_columns_ary << column['name']
+  end
+
+  all_students.each_with_index do |student, idx|
+    students_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{student.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_advisors
+  all_advisors = $database.execute("SELECT * FROM advisors")
+  advisors_schema = $database.execute("PRAGMA table_info(advisors)")
+
+  advisors_columns_ary = []
+  advisors_schema.each do |column|
+    advisors_columns_ary << column['name']
+  end
+
+  all_advisors.each_with_index do |prof, idx|
+    advisors_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{prof.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_classes
+  all_classes = $database.execute("SELECT * FROM classes")
+  classes_schema = $database.execute("PRAGMA table_info(classes)")
+
+  classes_columns_ary = []
+  classes_schema.each do |column|
+    classes_columns_ary << column['name']
+  end
+
+  all_classes.each_with_index do |cla, idx|
+    classes_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{cla.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_fields
+  all_fields = $database.execute("SELECT * FROM fields")
+  fields_schema = $database.execute("PRAGMA table_info(fields)")
+
+  fields_columns_ary = []
+  fields_schema.each do |column|
+    fields_columns_ary << column['name']
+  end
+
+  all_fields.each_with_index do |field, idx|
+    fields_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{field.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_grades
+  all_grades = $database.execute("SELECT * FROM grades")
+  grades_schema = $database.execute("PRAGMA table_info(grades)")
+
+  grades_columns_ary = []
+  grades_schema.each do |column|
+    grades_columns_ary << column['name']
+  end
+
+  all_grades.each_with_index do |grade, idx|
+    grades_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{grade.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+view_students
+view_advisors
+view_classes
+view_fields
+view_grades
