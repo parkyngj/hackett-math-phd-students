@@ -280,11 +280,6 @@ end
 
 # functions for viewing entries
 
-add_student('Park', "David", 1, 1)
-add_student('Stokes', "Nathan", 2, 2, "2015-05-18")
-add_grade(1, 4, 3.5)
-8.times do add_grade(2, 9, 3.7, "2015-12-14") end
-
 def view_students
   all_students = $database.execute("SELECT * FROM students")
   students_schema = $database.execute("PRAGMA table_info(students)")
@@ -370,8 +365,87 @@ def view_grades
   end
 end
 
-view_students
-view_advisors
-view_classes
-view_fields
-view_grades
+# more pinpointed functions for viewing entries
+
+def view_student_by_id(idnum)
+  selected_student = $database.execute("SELECT * FROM students WHERE id=?", [idnum])
+
+  students_schema = $database.execute("PRAGMA table_info(students)")
+
+  students_columns_ary = []
+  students_schema.each do |column|
+    students_columns_ary << column['name']
+  end
+
+  students_columns_ary.each_with_index do |column, idx|
+    puts "#{column} : #{selected_student[0][idx]}"
+  end  
+end
+
+def view_student_by_name(lastname, firstname)
+  selected_student = $database.execute("SELECT * FROM students WHERE last_name = ? AND first_name = ?", [lastname, firstname])
+
+  students_schema = $database.execute("PRAGMA table_info(students)")
+
+  students_columns_ary = []
+  students_schema.each do |column|
+    students_columns_ary << column['name']
+  end
+
+  students_columns_ary.each_with_index do |column, idx|
+    puts "#{column} : #{selected_student[0][idx]}"
+  end
+end
+
+view_student_by_name("Park", "David")
+
+def view_students_by_field(field_id)
+  selected_students = $database.execute("SELECT * FROM students WHERE field = ?", [field_id])
+  students_schema = $database.execute("PRAGMA table_info(students)")
+
+  students_columns_ary = []
+  students_schema.each do |column|
+    students_columns_ary << column['name']
+  end
+
+  selected_students.each_with_index do |student, idx|
+    students_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{student.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_students_by_advisor(advisor_id)
+  selected_students = $database.execute("SELECT * FROM students WHERE advisor=?", [advisor_id])
+  students_schema = $database.execute("PRAGMA table_info(students)")
+
+  students_columns_ary = []
+  students_schema.each do |column|
+    students_columns_ary << column['name']
+  end
+
+  selected_students.each_with_index do |student, idx|
+    students_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{student.values[i]}"
+    end
+    puts "----------------"
+  end
+end
+
+def view_student_grades(student_id)
+  selected_grades = $database.execute("SELECT * FROM grades WHERE student=?", [student_id])
+  grades_schema = $database.execute("PRAGMA table_info(grades)")
+
+  grades_columns_ary = []
+  grades_schema.each do |column|
+    grades_columns_ary << column['name']
+  end
+
+  selected_grades.each_with_index do |grade, idx|
+    grades_columns_ary.each_with_index do |column, i|
+      puts "#{column} : #{grade.values[i]}"
+    end
+    puts "----------------"
+  end
+end
