@@ -7,7 +7,7 @@ require_relative 'classes'
 require_relative 'grades'
 require_relative 'fields'
 
-$database = SQLite3::Database.new("hackett-math-phds.db")
+$database = SQLite3::Database.new("hmps.db")
 
 $database.execute("CREATE TABLE IF NOT EXISTS students(
   id INTEGER PRIMARY KEY,
@@ -258,3 +258,20 @@ $database.execute(
   "
   )
 
+# functions for adding entries
+
+def add_student(lastname, firstname, advisor_id, field_id, matrdate = Time.now.strftime("%Y-%m-%d"))
+  $database.execute("INSERT INTO students (last_name, first_name, advisor, field, matriculation_date) VALUES (?, ?, ?, ?, ?)", [lastname, firstname, advisor_id, field_id, matrdate])
+end
+
+def add_grade(student_id, class_id, grade, date = Time.now.strftime("%Y-%m-%d"))
+  $database.execute("INSERT INTO grades (student, class, grade, date_given) VALUES (?, ?, ?, ?)", [student_id, class_id, grade, date])
+end
+
+def add_class(classname, field_id)
+  $database.execute("INSERT INTO classes (name, field) VALUES (?, ?)", [classname, field_id])
+end
+
+def add_advisor(lastname, firstname, field_id)
+  $database.execute("INSERT INTO advisors (last_name, first_name, field) VALUES (?, ?, ?)", [lastname, firstname, field_id])
+end
