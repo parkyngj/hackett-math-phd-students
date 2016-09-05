@@ -13,12 +13,29 @@ _IMPORTANT_: If you are just testing the program for functionality and don't hav
 
 View and add information to students, advisors, classes, grades, fields (of math).
 
-#### Caveats
+#### Viewing Entries
+
+  * View all advisors, classes, fields, grades, or students
+  * View advisors by field
+  * View students by ID, name, advisor, specialty
+  * View grades by student ID, class
+
+#### Adding Entries
+
+  * Add entries to advisors, classes, grades, or students
+
+##### Caveats
 
    * If you do not enter a date of matriculation when entering data for a new student, it will automatically put the current day's date.
    * If you do not enter a timestamp date when entering data for a new grade, it will automatically put the current day's date.
-   * A student's GPA should not be updated manually, since will be calculated automatically by the data contained in the grades table.
-   * A student's date of graduation should not be updated manually. Graduate students at Hackett University are marked as "graduated" automatically once they have taken 8 graduate classes.
+
+#### Automated GPA Calculation
+
+Here at Hackett U, we use the 4.0 grading scale. A student's GPA should not be updated manually, since it will be calculated automatically whenever a corresponding entry to the grades table is entered.
+
+#### Automated Graduation Date Timestamp
+
+A doctoral student of math is considered graduated once they have taken 8 graduate classes. A student's date of graduation should not be updated manually, since the program will automatically mark them as "graduated" once they have fulfilled the requirement.
 
 ## File Navigation
 
