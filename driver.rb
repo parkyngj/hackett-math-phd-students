@@ -260,3 +260,171 @@ $database.execute(
   "
   )
 
+puts "Welcome to Hackett U's Math PhD Students Database.
+Please access the README file at the GitHub repo for this database (https://github.com/parkyngj/hackett-math-phd-students).
+NOTE: All inputs are case insensitive."
+
+def ui_main_menu
+puts "What would you like to do? (Type one of the choices below.)
+\tView Entries
+\tAdd Entries
+\tLeave"
+
+main_menu_input = gets.chomp.downcase
+
+  if main_menu_input == "view entries"
+    view_entries
+  elsif main_menu_input == "add entries"
+    add_entries
+  else
+    exit
+  end
+end
+
+def ui_view_entries
+puts "From which table would you like to view entries from? (Type one of the choices below.)
+\tAdvisors
+\tClasses
+\tGrades
+\tFields
+\tStudents
+\tBack to Main Menu"
+
+view_entries_input = gets.chomp.downcase
+
+  if view_entries_input == "advisors"
+    ui_view_advisors
+  elsif view_entries_input == "classes"
+    ui_view_classes
+  elsif view_entries_input == "grades"
+    ui_view_grades
+  elsif view_entries_input == "fields"
+    ui_view_fields
+  elsif view_entries_input == "students"
+    ui_view_students
+  else
+    ui_main_menu
+  end
+
+end
+
+def ui_view_advisors
+puts "Which entries would you like to view from the advisors table? (Type one of the choices below.)
+\tAll entries
+\tSearch by Specialty
+\tBack to Entry Viewer Menu
+\tBack to Main Menu"
+
+view_advisors_input = gets.chomp.downcase
+
+  if view_advisors_input == "all entries"
+    view_advisors
+    ui_view_advisors
+  elsif view_advisors_input == "search by field"
+    puts "Enter the ID of the field you wish to select advisors by:"
+    search_advisors_by_field_input = gets.chomp.to_i
+    search_advisors_by_field(search_advisors_by_field_input)
+    ui_view_advisors
+  elsif view_advisors_input == "back to entry viewer menu"
+    ui_view_entries
+  else
+    ui_main_menu
+  end
+end
+
+def ui_view_students
+puts "Which entries would you like to view from the students table? (Type one of the choices below.)
+\tAll entries
+\tSearch by ID
+\tSearch by Name
+\tSearch by Specialty
+\tSearch by Advisor
+\tBack to Entry Viewer Menu
+\tBack to Main Menu"
+
+view_students_input = gets.chomp.downcase
+
+  if view_advisors_input == "all entries"
+    view_students
+    ui_view_students
+  elsif view_students_input == "search by id"
+    puts "Enter the ID of the student you wish to view:"
+    search_student_by_id_input = gets.chomp.to_i
+    search_student_by_id(search_student_by_id_input)
+    ui_view_students
+  elsif view_students_input == "search by name"
+    puts "Enter the last name of the student you wish to view:"
+    search_student_by_name_ln = gets.chomp
+    puts "Enter the first name of the student you wish to view:"
+    search_students_by_name_fn = gets.chomp
+    search_students_by_name(search_student_by_name_ln,search_students_by_name_fn)
+    ui_view_students
+  elsif view_students_input == "search by specialty"
+    puts "Enter the ID of the field you wish to select students by:"
+    search_students_by_field_input = gets.chomp.to_i
+    search_students_by_field(search_students_by_field_input)
+    ui_view_students
+  elsif view_students_input == "search by advisor"
+    puts "Enter the ID of the advisor you wish to select students by:"
+    search_students_by_advisor_input = gets.chomp.to_i
+    search_students_by_advisor(search_students_by_advisor_input)
+    ui_view_students
+  elsif view_students_input == "back to entry viewer menu"
+    ui_view_entries
+  else
+    main_menu
+  end
+end
+
+def ui_view_grades
+puts "Which entries would you like to view from the grades table? (Type one of the choices below.)
+\tAll entries
+\tSearch by Student
+\tSearch by Class
+\tBack to Entry Viewer Menu
+\tBack to Main Menu"
+
+view_grades_input = gets.chomp.downcase
+
+  if view_grades_input == "all entries"
+    view_grades 
+    ui_view_grades
+  elsif view_grades_input == "search by student"
+    puts "Enter the ID of the student you wish to view the grades of:"
+    search_grades_of_student_by_id_input = gets.chomp.to_i
+    view_student_grades(search_grades_of_student_by_id_input)
+    ui_view_grades
+  elsif view_grades_input == "search by class"
+    puts "Enter the ID of the class you wish to view the grades of:"
+    search_grades_by_class_id_input = gets.chomp.to_i
+    search_grades_by_class(search_grades_by_class_id_input)
+    ui_view_grades
+  elsif view_students_input == "back to entry viewer menu"
+    ui_view_entries
+  else
+    main_menu
+  end
+end
+
+def ui_view_fields
+  view_fields 
+  ui_view_entries
+end
+
+def ui_view_classes
+  view_classes 
+  ui_view_classes
+end
+
+def add_entries
+puts "For which table would you like to add entries to? (Type one of the choices below.)
+\tAdvisors
+\tClasses
+\tGrades
+\tFields
+\tStudents"
+end
+
+
+
+main_menu
