@@ -280,88 +280,109 @@ end
 
 # functions for viewing entries
 
-def view_students
-  all_students = $database.execute("SELECT * FROM students")
-  students_schema = $database.execute("PRAGMA table_info(students)")
+add_student('Park', "David", 1, 1)
+add_student('Stokes', "Nathan", 2, 2, "2015-05-18")
 
-  students_columns_ary = []
-  students_schema.each do |column|
-    students_columns_ary << column['name']
+def view_students
+  puts "================================\nALL STUDENTS\n================================"
+  select_query = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id;")
+
+  refined_select_query = []
+
+  select_query.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_select_query << refined_student
   end
 
-  all_students.each_with_index do |student, idx|
-    students_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{student.values[i]}"
+  columns = ["Student ID", "Last Name", "First Name", "Advisor", "Specialization", "GPA", "Matriculation Date", "Graduation Date"]
+
+  refined_select_query.each_with_index do |student, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{student[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<select_query.length-1
   end
 end
+
 
 def view_advisors
-  all_advisors = $database.execute("SELECT * FROM advisors")
-  advisors_schema = $database.execute("PRAGMA table_info(advisors)")
+  puts "================================\nALL ADVISORS\n================================"
+  select_query = $database.execute("select advisors.id, advisors.last_name, advisors.first_name, fields.name from advisors join fields on advisors.field = fields.id;")
 
-  advisors_columns_ary = []
-  advisors_schema.each do |column|
-    advisors_columns_ary << column['name']
-  end
+  columns = ["Advisor ID", "Last Name", "First Name", "Specialization"]
 
-  all_advisors.each_with_index do |prof, idx|
-    advisors_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{prof.values[i]}"
+
+  select_query.each_with_index do |prof, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{prof.values[i]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<select_query.length-1
   end
 end
+
+view_advisors
 
 def view_classes
-  all_classes = $database.execute("SELECT * FROM classes")
-  classes_schema = $database.execute("PRAGMA table_info(classes)")
+  puts "================================\nALL CLASSES\n================================"
+  select_query = $database.execute("select classes.id, classes.name, fields.name from classes join fields where classes.field=fields.id;")
 
-  classes_columns_ary = []
-  classes_schema.each do |column|
-    classes_columns_ary << column['name']
+  refined_select_query = []
+
+  select_query.each_with_index do |cla|
+    refined_class = cla.drop_while {|k,v| k!= 0}
+    refined_select_query << refined_class
   end
 
-  all_classes.each_with_index do |cla, idx|
-    classes_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{cla.values[i]}"
+  columns = ["Course ID", "Course Name", "Field of Math"]
+
+  refined_select_query.each_with_index do |cla, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{cla[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<select_query.length-1
   end
 end
+
 
 def view_fields
+  puts "================================\nALL FIELDS\n================================"
   all_fields = $database.execute("SELECT * FROM fields")
-  fields_schema = $database.execute("PRAGMA table_info(fields)")
-
-  fields_columns_ary = []
-  fields_schema.each do |column|
-    fields_columns_ary << column['name']
-  end
+  
+  columns = ["Field ID", "Field Name"]
 
   all_fields.each_with_index do |field, idx|
-    fields_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{field.values[i]}"
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{field.values[i]}"
     end
-    puts "----------------"
+    puts "--------------------------------" if idx<all_fields.length-1
   end
 end
 
-def view_grades
-  all_grades = $database.execute("SELECT * FROM grades")
-  grades_schema = $database.execute("PRAGMA table_info(grades)")
+add_grade(1, 4, 3.5)
+8.times do add_grade(2, 9, 3.7, "2015-12-14") end
 
-  grades_columns_ary = []
-  grades_schema.each do |column|
-    grades_columns_ary << column['name']
+def view_grades
+  puts "================================\nALL GRADES\n================================"
+  select_query = $database.execute("select grades.id, students.id, students.last_name, students.first_name, classes.name, grades.grade, grades.date_given from grades join students on grades.student = students.id join classes on grades.class = classes.id;")
+
+  refined_select_query = []
+
+  select_query.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_select_query << refined_student
   end
 
-  all_grades.each_with_index do |grade, idx|
-    grades_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{grade.values[i]}"
+  columns = ["Grade Entry ID", "Student ID", "Last Name", "First Name", "Class", "Grade", "Date Given"]
+
+  refined_select_query.each_with_index do |grade, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{grade[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<select_query.length-1
   end
 end
 
@@ -396,8 +417,6 @@ def view_student_by_name(lastname, firstname)
     puts "#{column} : #{selected_student[0][idx]}"
   end
 end
-
-view_student_by_name("Park", "David")
 
 def view_students_by_field(field_id)
   selected_students = $database.execute("SELECT * FROM students WHERE field = ?", [field_id])
