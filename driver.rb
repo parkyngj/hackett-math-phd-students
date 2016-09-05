@@ -2,6 +2,7 @@
 
 require 'sqlite3'
 require 'csv'
+require 'faker'
 require_relative 'students'
 require_relative 'advisors'
 require_relative 'classes'
@@ -264,11 +265,39 @@ puts "Welcome to Hackett U's Math PhD Students Database.
 Please access the README file at the GitHub repo for this database (https://github.com/parkyngj/hackett-math-phd-students).
 NOTE: All inputs are case insensitive."
 
+def ui_generate_data
+  puts "How many random students would you like to generate?"
+  student_generate_num_input = gets.chomp.to_i
+
+  student_generate_num_input.times {
+    ln = Faker::Name.last_name
+    fn = Faker::Name.first_name
+    randid = rand(1..5)
+    add_student(ln, fn, randid, randid)
+  }
+
+  puts "Do you want to generate some random grades for these students? (y/n)"
+  grades_generate_response = gets.chomp
+
+  if grades_generate_response == "y"
+    student_generate_num_input.times do |i|
+      num_grades = rand(1..8)
+      num_grades.times do |idx|
+        random_class = rand(1..15)
+        random_grade = rand(0..4)
+        add_grade(i+1, random_class, random_grade)
+      end
+    end
+  end
+
+  ui_main_menu
+end
+
 def ui_main_menu
 puts "What would you like to do? (Type one of the choices below.)
 \tView Entries
 \tAdd Entries
-\tGenerate Data
+\tGenerate Student Data
 \tLeave"
 
 main_menu_input = gets.chomp.downcase
@@ -277,6 +306,8 @@ main_menu_input = gets.chomp.downcase
     ui_view_entries
   elsif main_menu_input == "add entries"
     ui_add_entries
+  elsif main_menu_input == "generate student data"
+    ui_generate_data
   else
     exit
   end
@@ -306,7 +337,6 @@ view_entries_input = gets.chomp.downcase
   else
     ui_main_menu
   end
-
 end
 
 def ui_view_advisors
@@ -321,7 +351,7 @@ view_advisors_input = gets.chomp.downcase
   if view_advisors_input == "all entries"
     view_advisors
     ui_view_advisors
-  elsif view_advisors_input == "search by field"
+  elsif view_advisors_input == "search by specialty"
     puts "Enter the ID of the field you wish to select advisors by:"
     search_advisors_by_field_input = gets.chomp.to_i
     search_advisors_by_field(search_advisors_by_field_input)
@@ -345,7 +375,7 @@ puts "Which entries would you like to view from the students table? (Type one of
 
 view_students_input = gets.chomp.downcase
 
-  if view_advisors_input == "all entries"
+  if view_students_input == "all entries"
     view_students
     ui_view_students
   elsif view_students_input == "search by id"
@@ -373,7 +403,7 @@ view_students_input = gets.chomp.downcase
   elsif view_students_input == "back to entry viewer menu"
     ui_view_entries
   else
-    main_menu
+    ui_main_menu
   end
 end
 
@@ -400,10 +430,10 @@ view_grades_input = gets.chomp.downcase
     search_grades_by_class_id_input = gets.chomp.to_i
     search_grades_by_class(search_grades_by_class_id_input)
     ui_view_grades
-  elsif view_students_input == "back to entry viewer menu"
+  elsif view_grades_input == "back to entry viewer menu"
     ui_view_entries
   else
-    main_menu
+    ui_main_menu
   end
 end
 
@@ -414,7 +444,7 @@ end
 
 def ui_view_classes
   view_classes 
-  ui_view_classes
+  ui_view_entries
 end
 
 def ui_add_entries
@@ -422,7 +452,22 @@ puts "For which table would you like to add entries to? (Type one of the choices
 \tAdvisors
 \tClasses
 \tGrades
-\tStudents"
+\tStudents
+\tBack to Main Menu"
+
+add_entries_input = gets.chomp
+
+  if add_entries_input == "advisors"
+    ui_add_advisor
+  elsif add_entries_input == "classes"
+    ui_add_class
+  elsif add_entries_input == "grades"
+    ui_add_grade
+  elsif add_entries_input == "students"
+    ui_add_student
+  else 
+    ui_main_menu
+  end
 end
 
 def ui_add_advisor
@@ -450,12 +495,14 @@ def ui_add_grade
   add_grade_student_id_input = gets.chomp.to_i
   puts "Enter the ID of the class for which this grade is being given:"
   add_grade_class_id_input = gets.chomp.to_i
+  puts "Enter the grade that was given. (Any decimal number between 0.0 and 4.0)"
+  add_grade_float_input = gets.chomp.to_i
   puts "Enter the date that the grade was given. (YYYY-MM-DD format) If it is today, then just press enter."
   add_grade_date_input = gets.chomp
-  if add_grade_date_input = ""
-    add_grade(add_grade_student_id_input, add_grade_class_id_input)
+  if add_grade_date_input == ""
+    add_grade(add_grade_student_id_input, add_grade_class_id_input, add_grade_float_input)
   else 
-    add_grade(add_grade_student_id_input, add_grade_class_id_input, add_grade_date_input)
+    add_grade(add_grade_student_id_input, add_grade_class_id_input, add_grade_float_input, add_grade_date_input)
   end
   ui_add_entries
 end
@@ -471,12 +518,12 @@ def ui_add_student
   add_student_field_id_input = gets.chomp.to_i
   puts "Enter the matriculation date of the new student. (YYYY-MM-DD format) If it is today, then just press enter."
   add_student_matr_date_input = gets.chomp
-  if add_student_matr_date_input = ""
-    add_student(add_student_ln, add_advisor_fn, add_student_advisor_id_input, add_student_field_id_input)
+  if add_student_matr_date_input == ""
+    add_student(add_student_ln, add_student_fn, add_student_advisor_id_input, add_student_field_id_input)
   else 
     add_student(add_student_ln, add_student_fn, add_student_advisor_id_input, add_student_field_id_input, add_student_matr_date_input)
   end
   ui_add_entries
 end
 
-main_menu
+ui_main_menu
