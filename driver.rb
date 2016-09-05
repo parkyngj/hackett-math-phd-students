@@ -268,14 +268,15 @@ def ui_main_menu
 puts "What would you like to do? (Type one of the choices below.)
 \tView Entries
 \tAdd Entries
+\tGenerate Data
 \tLeave"
 
 main_menu_input = gets.chomp.downcase
 
   if main_menu_input == "view entries"
-    view_entries
+    ui_view_entries
   elsif main_menu_input == "add entries"
-    add_entries
+    ui_add_entries
   else
     exit
   end
@@ -416,15 +417,66 @@ def ui_view_classes
   ui_view_classes
 end
 
-def add_entries
+def ui_add_entries
 puts "For which table would you like to add entries to? (Type one of the choices below.)
 \tAdvisors
 \tClasses
 \tGrades
-\tFields
 \tStudents"
 end
 
+def ui_add_advisor
+  puts "Enter the last name of the new advisor you wish to add:"
+  add_advisor_ln = gets.chomp
+  puts "Enter the first name of the new advisor you wish to add:"
+  add_advisor_fn = gets.chomp
+  puts "Enter the ID of the field that the new advisor specializes in:"
+  add_advisor_field_input = gets.chomp.to_i
+  add_advisor(add_advisor_ln, add_advisor_fn, add_advisor_field_input)
+  ui_add_entries
+end
 
+def ui_add_class
+  puts "Enter the name of the class you wish to add:"
+  add_class_name_input = gets.chomp
+  puts "Enter the ID of the field that the class is relevant to:"
+  add_class_field_id_input = gets.chomp.to_i
+  add_class(add_class_name_input, add_class_field_id_input)
+  ui_add_entries
+end
+
+def ui_add_grade
+  puts "Enter the ID of the student who is receiving this grade:"
+  add_grade_student_id_input = gets.chomp.to_i
+  puts "Enter the ID of the class for which this grade is being given:"
+  add_grade_class_id_input = gets.chomp.to_i
+  puts "Enter the date that the grade was given. (YYYY-MM-DD format) If it is today, then just press enter."
+  add_grade_date_input = gets.chomp
+  if add_grade_date_input = ""
+    add_grade(add_grade_student_id_input, add_grade_class_id_input)
+  else 
+    add_grade(add_grade_student_id_input, add_grade_class_id_input, add_grade_date_input)
+  end
+  ui_add_entries
+end
+
+def ui_add_student
+  puts "Enter the last name of the new student:"
+  add_student_ln = gets.chomp
+  puts "Enter the first name of the new student:"
+  add_student_fn = gets.chomp
+  puts "Enter the ID of the advisor of the new student:"
+  add_student_advisor_id_input = gets.chomp.to_i
+  puts "Enter the ID of the specialty field of the new student:"
+  add_student_field_id_input = gets.chomp.to_i
+  puts "Enter the matriculation date of the new student. (YYYY-MM-DD format) If it is today, then just press enter."
+  add_student_matr_date_input = gets.chomp
+  if add_student_matr_date_input = ""
+    add_student(add_student_ln, add_advisor_fn, add_student_advisor_id_input, add_student_field_id_input)
+  else 
+    add_student(add_student_ln, add_student_fn, add_student_advisor_id_input, add_student_field_id_input, add_student_matr_date_input)
+  end
+  ui_add_entries
+end
 
 main_menu
