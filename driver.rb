@@ -280,9 +280,6 @@ end
 
 # functions for viewing entries
 
-add_student('Park', "David", 1, 1)
-add_student('Stokes', "Nathan", 2, 2, "2015-05-18")
-
 def view_students
   puts "================================\nALL STUDENTS\n================================"
   select_query = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id;")
@@ -305,7 +302,6 @@ def view_students
   end
 end
 
-
 def view_advisors
   puts "================================\nALL ADVISORS\n================================"
   select_query = $database.execute("select advisors.id, advisors.last_name, advisors.first_name, fields.name from advisors join fields on advisors.field = fields.id;")
@@ -321,8 +317,6 @@ def view_advisors
   puts "--------------------------------" if idx<select_query.length-1
   end
 end
-
-view_advisors
 
 def view_classes
   puts "================================\nALL CLASSES\n================================"
@@ -361,9 +355,6 @@ def view_fields
   end
 end
 
-add_grade(1, 4, 3.5)
-8.times do add_grade(2, 9, 3.7, "2015-12-14") end
-
 def view_grades
   puts "================================\nALL GRADES\n================================"
   select_query = $database.execute("select grades.id, students.id, students.last_name, students.first_name, classes.name, grades.grade, grades.date_given from grades join students on grades.student = students.id join classes on grades.class = classes.id;")
@@ -388,83 +379,113 @@ end
 
 # more pinpointed functions for viewing entries
 
-def view_student_by_id(idnum)
-  selected_student = $database.execute("SELECT * FROM students WHERE id=?", [idnum])
+def search_student_by_id(idnum)
+  puts "================================\nSearch Students By ID: #{idnum}\n================================"
+  selected_student = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id where students.id = ?", [idnum])
 
-  students_schema = $database.execute("PRAGMA table_info(students)")
+  refined_selected_student = []
 
-  students_columns_ary = []
-  students_schema.each do |column|
-    students_columns_ary << column['name']
+  selected_student.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_selected_student << refined_student
   end
 
-  students_columns_ary.each_with_index do |column, idx|
-    puts "#{column} : #{selected_student[0][idx]}"
-  end  
-end
+  columns = ["Student ID", "Last Name", "First Name", "Advisor Last Name", "Specialty", "GPA", "Matriculation Date", "Graduation Date"]
 
-def view_student_by_name(lastname, firstname)
-  selected_student = $database.execute("SELECT * FROM students WHERE last_name = ? AND first_name = ?", [lastname, firstname])
-
-  students_schema = $database.execute("PRAGMA table_info(students)")
-
-  students_columns_ary = []
-  students_schema.each do |column|
-    students_columns_ary << column['name']
-  end
-
-  students_columns_ary.each_with_index do |column, idx|
-    puts "#{column} : #{selected_student[0][idx]}"
-  end
-end
-
-def view_students_by_field(field_id)
-  selected_students = $database.execute("SELECT * FROM students WHERE field = ?", [field_id])
-  students_schema = $database.execute("PRAGMA table_info(students)")
-
-  students_columns_ary = []
-  students_schema.each do |column|
-    students_columns_ary << column['name']
-  end
-
-  selected_students.each_with_index do |student, idx|
-    students_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{student.values[i]}"
+  refined_selected_student.each_with_index do |student, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{student[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<refined_selected_student.length-1
   end
 end
 
-def view_students_by_advisor(advisor_id)
-  selected_students = $database.execute("SELECT * FROM students WHERE advisor=?", [advisor_id])
-  students_schema = $database.execute("PRAGMA table_info(students)")
+def search_students_by_name(lastname, firstname)
+  puts "================================\nSearch Students By Name: #{lastname}, #{firstname}\n================================"
+  selected_students = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id where students.last_name=? and students.first_name=?", [lastname, firstname])
 
-  students_columns_ary = []
-  students_schema.each do |column|
-    students_columns_ary << column['name']
+  refined_selected_students = []
+
+  selected_students.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_selected_students << refined_student
   end
 
-  selected_students.each_with_index do |student, idx|
-    students_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{student.values[i]}"
+  columns = ["Student ID", "Last Name", "First Name", "Advisor Last Name", "Specialty", "GPA", "Matriculation Date", "Graduation Date"]
+
+  refined_selected_students.each_with_index do |student, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{student[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<refined_selected_students.length-1
+  end
+end
+
+def search_students_by_field(field_id)
+  puts "================================\nSearch Students By Field ID: #{field_id}\n================================"
+  selected_students = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id where students.field=?", [field_id])
+
+  refined_selected_students = []
+
+  selected_students.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_selected_students << refined_student
+  end
+
+  columns = ["Student ID", "Last Name", "First Name", "Advisor Last Name", "Specialty", "GPA", "Matriculation Date", "Graduation Date"]
+
+  refined_selected_students.each_with_index do |student, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{student[i][1]}"
+    end
+
+  puts "--------------------------------" if idx<refined_selected_students.length-1
+  end
+end
+
+
+def search_students_by_advisor(advisor_id)
+  puts "================================\nSearch Students By Advisor ID: #{advisor_id}\n================================"
+  selected_students = $database.execute("select students.id, students.last_name, students.first_name, advisors.last_name, fields.name, students.gpa, students.matriculation_date, students.graduation_date from students join advisors on students.advisor=advisors.id join fields on students.field=fields.id where students.advisor=?", [advisor_id])
+
+  refined_selected_students = []
+
+  selected_students.each_with_index do |student|
+    refined_student = student.drop_while {|k,v| k!= 0}
+    refined_selected_students << refined_student
+  end
+
+  columns = ["Student ID", "Last Name", "First Name", "Advisor Last Name", "Specialty", "GPA", "Matriculation Date", "Graduation Date"]
+
+  refined_selected_students.each_with_index do |student, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{student[i][1]}"
+    end
+
+  puts "--------------------------------" if idx<refined_selected_students.length-1
   end
 end
 
 def view_student_grades(student_id)
-  selected_grades = $database.execute("SELECT * FROM grades WHERE student=?", [student_id])
-  grades_schema = $database.execute("PRAGMA table_info(grades)")
+  puts "================================\nSearch Grades By Student ID: #{student_id}\n================================"
+  selected_grades = $database.execute("select grades.id, classes.name, grades.grade, grades.date_given from grades join classes on grades.class = classes.id where grades.student=?", [student_id])
 
-  grades_columns_ary = []
-  grades_schema.each do |column|
-    grades_columns_ary << column['name']
+  refined_selected_grades = []
+
+  selected_grades.each_with_index do |grade|
+    refined_grade = grade.drop_while {|k,v| k!= 0}
+    refined_selected_grades << refined_grade
   end
 
-  selected_grades.each_with_index do |grade, idx|
-    grades_columns_ary.each_with_index do |column, i|
-      puts "#{column} : #{grade.values[i]}"
+  columns = ["Grade Entry ID", "Class", "Grade", "Date Given"]
+
+  refined_selected_grades.each_with_index do |grade, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{grade[i][1]}"
     end
-    puts "----------------"
+
+  puts "--------------------------------" if idx<refined_selected_grades.length-1
   end
 end
