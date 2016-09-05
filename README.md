@@ -99,6 +99,7 @@ Here are some features I would like to implement, given that I had enough time:
 
 * view only graduated students
 * view only current students
+* edit graduation_timestamp trigger so that a student is only marked as graduated if they have actually passed (2.0+) 8 graduate classes
 * proper update functions
 * test for valid input
 
