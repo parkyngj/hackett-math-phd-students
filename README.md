@@ -8,7 +8,7 @@ This is a Ruby program that uses persistent data to organize data pertaining to 
 
 ## Features
 
-**__IMPORTANT!__**: If you are just testing the program for functionality and don't have any real entries to enter, then after running driver.rb, choose the "generate student data" from the main menu in the UI.
+_IMPORTANT_: If you are just testing the program for functionality and don't have any real entries to enter, then after running driver.rb, choose the "generate student data" from the main menu in the UI.
 
 
 View and add information to students, advisors, classes, grades, fields (of math).
