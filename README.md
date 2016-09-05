@@ -8,16 +8,36 @@ This is a Ruby program that uses persistent data to organize data pertaining to 
 
 ![Database Schema](schema.png)
 
+## Pre-Populated Tables and Entries
+
+We have added entries prior to user entry to the database, as these fields, classes, and advisors existed prior to the creation of the database.
+
+| ID  | Last Name   | First Name  | Field   |
+|---- |-----------  |------------ |-------  |
+| 1   | Blanda      | Adrienne    | 1       |
+| 2   | Kassulke    | Grant       | 2       |
+| 3   | Mertz       | Damaris     | 3       |
+| 4   | Ratke       | Jerad       | 4       |
+| 5   | Robel       | Stephan     | 5       |
+
 ## Features
 
-View, update, and add information to students, advisors, classes, grades, fields (of math).
+View and add information to students, advisors, classes, grades, fields (of math).
 
 #### Caveats
 
    * If you do not enter a date of matriculation when entering data for a new student, it will automatically put the current day's date.
+   * If you do not enter a timestamp date when entering data for a new grade, it will automatically put the current day's date.
    * A student's GPA should not be updated manually, since will be calculated automatically by the data contained in the grades table.
    * A student's date of graduation should not be updated manually. Graduate students at Hackett University are marked as "graduated" automatically once they have taken 8 graduate classes.
 
 ## File Navigation
 
-Under Construction
+* **advisors.rb**: Contains functions to add advisors, view advisors, search advisors by field
+* **classes.rb**: Contains functions to add classes, view classes
+* **driver.rb**: Main file to run to execute any and all functions to manipulate the database
+* **fields.rb**: Contains functions to view fields
+* **hmps.db**: Database of Math PhDs at Hackett U.
+* **grades.rb**: Contains functions to add grades, view grades, search grades by class, search grades by student ID
+* **schema.png**: Image containing the schemas for the different tables in the database
+* **students.rb**: Contains functions to add students, view students, search students by id, name, advisor, field
