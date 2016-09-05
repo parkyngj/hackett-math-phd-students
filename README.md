@@ -76,6 +76,15 @@ We have added entries prior to user entry to the database, as these fields, clas
 | 4   | Ratke       | Jerad       | 4       |
 | 5   | Robel       | Stephan     | 5       |
 
+# Closing Comments
+
+Here are some features I would like to implement, given that I had enough time:
+
+* view only graduated students
+* view only current students
+* proper update functions
+* test for valid input
+
 # Credits
 
 Thank you to [Faker](https://github.com/stympy/faker), a Ruby gem that generates Fake names, etc. for generating the university name, advisor names, and (conditionally) student names.
