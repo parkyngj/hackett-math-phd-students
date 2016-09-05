@@ -75,4 +75,4 @@ We have added entries prior to user entry to the database, as these fields, clas
 
 # Credits
 
-## Thank you to [Faker](https://github.com/stympy/faker), a Ruby gem that generates Fake names, etc. for generating the university name, advisor names, and (conditionally) student names.
+Thank you to [Faker](https://github.com/stympy/faker), a Ruby gem that generates Fake names, etc. for generating the university name, advisor names, and (conditionally) student names.
