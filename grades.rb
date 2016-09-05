@@ -45,3 +45,25 @@ def view_student_grades(student_id)
   puts "--------------------------------" if idx<refined_selected_grades.length-1
   end
 end
+
+def search_grades_by_class(class_id)
+  puts "================================\nSearch Grades By Class ID: #{class_id}\n================================"
+  selected_grades = $database.execute("select grades.id, grades.student, students.last_name, students.first_name, grades.grade, grades.date_given from grades join students on grades.student=students.id where grades.class=?", [class_id])
+
+  refined_selected_grades = []
+
+  selected_grades.each_with_index do |grade|
+    refined_grade = grade.drop_while {|k,v| k!= 0}
+    refined_selected_grades << refined_grade
+  end
+
+  columns = ["Grade Entry ID", "Student ID", "Student Last Name", "Student First Name", "Grade", "Date Given"]
+
+  refined_selected_grades.each_with_index do |grade, idx|
+    columns.each_with_index do |column, i|
+      puts "#{column}: #{grade[i][1]}"
+    end
+
+  puts "--------------------------------" if idx<refined_selected_grades.length-1
+  end
+end
